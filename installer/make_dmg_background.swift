@@ -15,7 +15,7 @@ NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 
 let black = NSColor.black
 let gold = NSColor(calibratedRed: 1, green: 1, blue: 85 / 255, alpha: 1)
-let green = NSColor(calibratedRed: 0x5d / 255.0, green: 0xfc / 255.0, blue: 0x68 / 255.0, alpha: 1)
+let green = NSColor(calibratedRed: 0x02 / 255.0, green: 0xf7 / 255.0, blue: 0x13 / 255.0, alpha: 1)
 black.setFill()
 NSRect(x: 0, y: 0, width: W, height: H).fill()
 
@@ -38,6 +38,7 @@ func draw(_ s: String, _ size: CGFloat, _ y: CGFloat, _ color: NSColor, bold: Bo
 draw("TempleOS", 30, H - 68, green, bold: true)
 draw("drag the temple into Applications", 13, H - 92, green)
 draw("courtesy of real nice™ and the Xenophora Corporation 2027.5", 12, 64, green)
+draw("RIP Terry Davis (1969-2018) — They May Glow, but May You Forever Shine On", 11, 40, green)
 
 NSGraphicsContext.restoreGraphicsState()
 let png = rep.representation(using: .png, properties: [:])!

@@ -26,10 +26,7 @@ done
 
 swift installer/make_dmg_background.swift build/dmg-background.png
 
-# dot-prefixed so Finder keeps it hidden; the app's first-run dialogs carry the
-# same guidance (macOS no longer allows any file to auto-open on mount)
 cp -R "$APP" build/dmg-src/
-cp "installer/READ ME FIRST.txt" "build/dmg-src/.READ ME FIRST.txt"
 
 create-dmg \
   --volname "TempleOS" \

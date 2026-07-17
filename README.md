@@ -15,7 +15,7 @@ courtesy of real nice™ and the Xenophora Corporation 2027.5
 ## What's here
 
 - `temple.sh` — boots the VM by hand. `./temple.sh install` for the first run (installs the ISO onto a virtual disk), plain `./temple.sh` after that.
-- `installer/` — source for the DMG: the self-setting-up app launcher, its Info.plist, the DMG background painter (Swift), and the READ ME.
+- `installer/` — source for the DMG: the self-setting-up app launcher, its Info.plist, and the DMG background painter (Swift).
 - `build_dmg.sh` — assembles the app bundle (ISO included) and wraps it in a drag-to-Applications disk image.
 - `make_icon.py` — stdlib-only Python script that draws the pixel-art gold-cross icon and emits the PNG iconset (compiled to `.icns` with Apple's `iconutil`).
 
