@@ -4,11 +4,20 @@ Run [TempleOS](https://templeos.org) — Terry A. Davis's public-domain 64-bit t
 
 RIP Terry A. Davis, 1969–2018.
 
+## One-click install
+
+Grab **TempleOS.dmg** from [Releases](https://github.com/pslym/templeos-mac/releases), open it, and drag the temple into Applications. First launch: right-click → **Open** (the app is unsigned; newer macOS may also want System Settings → Privacy & Security → "Open Anyway"). The app handles the rest — it offers to install QEMU via Homebrew if missing, creates the virtual machine, and walks you through TempleOS's one-time installer with dialogs. Every launch after that boots straight into the temple.
+
+Build it yourself with `./build_dmg.sh` (needs `brew install create-dmg`).
+
+courtesy of real nice™ and the Xenophora Corporation 2027.5
+
 ## What's here
 
-- `temple.sh` — boots the VM. `./temple.sh install` for the first run (installs the ISO onto a virtual disk), plain `./temple.sh` after that.
-- `TempleOS.app` — a minimal macOS app bundle that wraps `temple.sh`, so you can keep TempleOS in your Dock. Pixel-art gold-cross icon included.
-- `make_icon.py` — stdlib-only Python script that draws the icon and emits the PNG iconset (compiled to `.icns` with Apple's `iconutil`).
+- `temple.sh` — boots the VM by hand. `./temple.sh install` for the first run (installs the ISO onto a virtual disk), plain `./temple.sh` after that.
+- `installer/` — source for the DMG: the self-setting-up app launcher, its Info.plist, the DMG background painter (Swift), and the READ ME.
+- `build_dmg.sh` — assembles the app bundle (ISO included) and wraps it in a drag-to-Applications disk image.
+- `make_icon.py` — stdlib-only Python script that draws the pixel-art gold-cross icon and emits the PNG iconset (compiled to `.icns` with Apple's `iconutil`).
 
 ## Setup
 

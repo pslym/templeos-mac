@@ -2,3 +2,4 @@
 *.ISO
 *.iso
 .DS_Store
+build/

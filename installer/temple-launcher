@@ -1,0 +1,91 @@
+#!/bin/zsh
+# TempleOS.app launcher — sets up the VM on first run, then boots the temple.
+# RIP Terry A. Davis, 1969-2018.
+set -u
+
+RES="${0:A:h:h}/Resources"
+APP_SUPPORT="$HOME/Library/Application Support/TempleOS"
+
+ask() {  # ask "message" "button"... — last button is the default; prints the choice
+  local msg="$1"; shift
+  local btns="" b
+  for b in "$@"; do btns+="${btns:+, }\"$b\""; done
+  osascript -e "button returned of (display dialog \"$msg\" with title \"TempleOS\" buttons {$btns} default button \"${@[-1]}\")" 2>/dev/null
+}
+
+# ---- find QEMU ---------------------------------------------------------------
+QEMU=""
+for p in qemu-system-x86_64 /opt/homebrew/bin/qemu-system-x86_64 /usr/local/bin/qemu-system-x86_64; do
+  if command -v "$p" >/dev/null 2>&1; then QEMU="$(command -v "$p")"; break; fi
+done
+
+if [[ -z "$QEMU" ]]; then
+  choice="$(ask "TempleOS runs inside QEMU, which isn't installed yet.\n\n'Install with Homebrew' opens Terminal and runs: brew install qemu\nRelaunch TempleOS.app when it finishes." "Cancel" "Open QEMU Website" "Install with Homebrew")"
+  case "$choice" in
+    "Install with Homebrew")
+      if command -v brew >/dev/null 2>&1 || [[ -x /opt/homebrew/bin/brew || -x /usr/local/bin/brew ]]; then
+        osascript -e 'tell application "Terminal" to activate' \
+                  -e 'tell application "Terminal" to do script "brew install qemu && echo && echo \"Done — now relaunch TempleOS.app\""'
+      else
+        ask "Homebrew isn't installed either. Opening brew.sh — install Homebrew first, then relaunch TempleOS.app." "OK"
+        open "https://brew.sh"
+      fi
+      ;;
+    "Open QEMU Website") open "https://www.qemu.org/download/#macos" ;;
+  esac
+  exit 0
+fi
+QEMU_IMG="${QEMU:h}/qemu-img"
+[[ -x "$QEMU_IMG" ]] || QEMU_IMG="$(command -v qemu-img)"
+
+# ---- locate the VM (an existing ~/VMs/TempleOS setup wins) --------------------
+if [[ -f "$HOME/VMs/TempleOS/TempleOS.qcow2" ]]; then
+  VMDIR="$HOME/VMs/TempleOS"
+else
+  VMDIR="$APP_SUPPORT"
+fi
+DISK="$VMDIR/TempleOS.qcow2"
+ISO="$VMDIR/TempleOS.ISO"
+MARK="$VMDIR/.install-complete"
+
+boot() {  # boot [install]
+  local -a args
+  args=(
+    -machine pc,pcspk-audiodev=snd0
+    -audiodev coreaudio,id=snd0
+    -m 1024
+    -smp 2
+    -rtc base=localtime
+    -drive file="$DISK",format=qcow2,if=ide
+    -display cocoa,show-cursor=on,zoom-to-fit=on
+    -name "TempleOS"
+  )
+  if [[ "${1:-}" == install ]]; then
+    args+=(-cdrom "$ISO" -boot order=d)
+  else
+    args+=(-boot order=c)
+  fi
+  "$QEMU" "${args[@]}"
+}
+
+run_installer() {
+  choice="$(ask "First run — the TempleOS installer will boot in a window.\n\n1. Answer Y to its questions (F7 = instant Yes).\n2. When it asks to reboot, DON'T — quit with Cmd+Q instead.\n\n(Ctrl+Alt+G frees the mouse if the window grabs it; Cmd+F toggles fullscreen.)\n\ncourtesy of real nice™ and the Xenophora Corporation 2027.5" "Cancel" "Begin Install")"
+  [[ "$choice" == "Begin Install" ]] || exit 0
+  boot install
+  choice="$(ask "Did the installer finish copying files before you quit?" "No — run it again later" "Yes — enter the temple")"
+  if [[ "$choice" == Yes* ]]; then
+    touch "$MARK"
+    boot
+  fi
+}
+
+if [[ ! -f "$DISK" ]]; then
+  mkdir -p "$VMDIR"
+  cp "$RES/TempleOS.ISO" "$ISO"
+  "$QEMU_IMG" create -f qcow2 "$DISK" 2G >/dev/null
+  run_installer
+elif [[ ! -f "$MARK" && "$VMDIR" == "$APP_SUPPORT" ]]; then
+  run_installer
+else
+  boot
+fi

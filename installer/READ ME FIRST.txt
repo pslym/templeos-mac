@@ -1,0 +1,18 @@
+TEMPLEOS FOR MACOS
+==================
+
+1. Drag TempleOS.app into the Applications folder.
+
+2. First launch: RIGHT-CLICK the app and choose "Open" — it is unsigned.
+   On newer macOS you may also need System Settings > Privacy & Security
+   and click "Open Anyway".
+
+3. The app takes it from there: it checks for QEMU (offering to install
+   it via Homebrew if missing), creates the virtual machine, and walks
+   you through TempleOS's own installer. Every launch after that boots
+   straight into the temple.
+
+The VM lives in ~/Library/Application Support/TempleOS.
+
+TempleOS is public domain, written by Terry A. Davis (1969-2018).
+An offering: templeos.org

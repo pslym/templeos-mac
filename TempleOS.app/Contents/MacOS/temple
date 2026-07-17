@@ -1,3 +1,0 @@
-#!/bin/zsh
-# Expects the VM files (temple.sh, TempleOS.qcow2) in ~/VMs/TempleOS
-exec "$HOME/VMs/TempleOS/temple.sh"
